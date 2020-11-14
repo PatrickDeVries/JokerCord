@@ -204,6 +204,17 @@ async def on_message(message):
         except IndexError:
             ev = 0
             
+        if (message.author.id != client.user.id and (guild_list[str(message.guild.id)][0] == "True" and "Added to Pokédex." in message.content)): #and "A wild" in message.content):
+            # poke = regex.search(" ([a-zA-Z-']*)! Added to ", message.content)
+            # poke = poke.group(1)
+            # print('Caught a', poke)
+            # i = poke
+            f = open('./pokemonList.txt', 'r')
+            for i in f:
+                if i.lower().strip() in message.content.lower():
+                    if (i.strip().lower() not in file_read("User", "caught.txt")):
+                        file_append("User","caught.txt",i.strip().lower())
+            
         if (message.author.id != client.user.id and (guild_list[str(message.guild.id)][0] == "True" and "You can't get a hint right now!" in message.content) and hinted > 0 and hinted < 5): #and "A wild" in message.content):
             hinted = hinted + 1
             await asyncio.sleep(random.randint(5, 10))
@@ -224,8 +235,8 @@ async def on_message(message):
                     found = regex.search(reg, i.lower().strip())
                     if found:
                         await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
-                        if (i.strip().lower() not in file_read("User", "caught.txt")):
-                            file_append("User","caught.txt",i.strip().lower())
+                        # if (i.strip().lower() not in file_read("User", "caught.txt")):
+                        #     file_append("User","caught.txt",i.strip().lower())
                         print('found pokemon match: ', i)
                         hinted = 0
 
