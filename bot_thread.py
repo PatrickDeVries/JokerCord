@@ -44,12 +44,13 @@ def write_lock_jsonDump(fileObject, fileContent):
         print(e.__class__.__name__)
 legendaries = ['arceus', 'articuno', 'azelf', 'celebi', 'cobalion', 'cosmoem', 'cosmog', 'cresselia',
             'darkrai', 'deoxys', 'dialga', 'diancie', 'Entei', 'genesect', 'giratina', 'groudon',
-            'heatran', 'ho-Oh', 'hoopa', 'jirachi', 'Keldeo', 'kyogre', 'kyurem', 'landorus',
+            'heatran', 'ho-Oh', 'ho-oh' 'hoopa', 'jirachi', 'Keldeo', 'kyogre', 'kyurem', 'landorus',
             'latias', 'latios', 'lugia', 'lunala', 'Magearna', 'manaphy', 'marshadow', 'meloetta',
             'mesprit', 'mew', 'mewtwo', 'moltres', 'Necrozma', 'palkia', 'phione', 'raikou',
             'rayquaza', 'regice', 'regigigas', 'regirock', 'registeel', 'reshiram', 'shaymin', 'silvally',
             'solgaleo', 'suicune', 'tapu bulu', 'tapu fini', 'tapu koko', 'tapu lele', 'terrakion', 'thundurus',
-            'tornadus', 'type: null', 'uxie', 'victini', 'virizion', 'volcanion', 'xerneas', 'yveltal', 'naganadel']
+            'tornadus', 'type: null', 'uxie', 'victini', 'virizion', 'volcanion', 'xerneas', 'yveltal', 'naganadel', 'attack deoxys',
+            'speed deoxys', 'normal deoxys', 'defense deoxys']
 
 
 #Define write to json
@@ -97,7 +98,7 @@ with open (str(os.path.join(path,'User','channels.json'))) as ch:
     channel_list = json.load(ch)
     ch.close()
 with open (str(os.path.join(path,'User','customs.json'))) as cs:
-            custom_list = json.load(cs)
+            custom_list = json.load(cs)                
             cs.close()
 #Start
 #Pref
@@ -234,13 +235,59 @@ async def on_message(message):
                 if len(reg.strip()) == len(i.strip()):
                     found = regex.search(reg, i.lower().strip())
                     if found:
-                        await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
-                        # if (i.strip().lower() not in file_read("User", "caught.txt")):
-                        #     file_append("User","caught.txt",i.strip().lower())
+                        if i.lower().strip() in [c.lower().strip() for c in legendaries] or i.lower().strip() in [c.lower().strip() for c in custom_list]:
+                            await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
+                        else:
+                            await message.channel.send(i.lower().strip() + ' ignored')
+
+                            # if (i.strip().lower() not in file_read("User", "caught.txt")):
+                            #     file_append("User","caught.txt",i.strip().lower())
                         print('found pokemon match: ', i)
                         hinted = 0
+                elif len("alolan " + i.strip()) == len(reg):
+                    oi = i
+                    i = "alolan " + i.strip()
+                    found = regex.search(reg, i.lower().strip())
+                    if found:
+                        # if oi.lower().strip() in [c.lower().strip() for c in legendaries] or oi.lower().strip() in [c.lower().strip() for c in custom_list]:
+                        await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
+                        # else:
+                            # await message.channel.send(i.lower().strip() + ' ignored')
 
-            
+                            # if (i.strip().lower() not in file_read("User", "caught.txt")):
+                            #     file_append("User","caught.txt",i.strip().lower())
+                        print('found pokemon match: ', i)
+                        hinted = 0
+                        
+                elif len("galarian " + i.strip()) == len(reg):
+                    oi = i
+                    i = "galarian " + i.strip()
+                    found = regex.search(reg, i.lower().strip())
+                    if found:
+                        # if oi.lower().strip() in [c.lower().strip() for c in legendaries] or oi.lower().strip() in [c.lower().strip() for c in custom_list]:
+                        await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
+                        # else:
+                        #     await message.channel.send(i.lower().strip() + ' ignored')
+
+                            # if (i.strip().lower() not in file_read("User", "caught.txt")):
+                            #     file_append("User","caught.txt",i.strip().lower())
+                        print('found pokemon match: ', i)
+                        hinted = 0
+                
+                elif len("shiny " + i.strip()) == len(reg):
+                    oi = i
+                    i = "shiny " + i.strip()
+                    found = regex.search(reg, i.lower().strip())
+                    if found:
+                        # if oi.lower().strip() in [c.lower().strip() for c in legendaries] or oi.lower().strip() in [c.lower().strip() for c in custom_list]:
+                        await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
+                        # else:
+                        #     await message.channel.send(i.lower().strip() + ' ignored')
+
+                            # if (i.strip().lower() not in file_read("User", "caught.txt")):
+                            #     file_append("User","caught.txt",i.strip().lower())
+                        print('found pokemon match: ', i)
+                        hinted = 0            
             
         #Check if message is from Pokecord Spawn
         if (message.author.id != client.user.id and ev == 1 and (guild_list[str(message.guild.id)][0] == "True")): #and "A wild" in message.content):
