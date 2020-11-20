@@ -14,6 +14,7 @@ import traceback
 import requests
 import webbrowser
 import regex
+import pickle
 
 
 
@@ -194,174 +195,193 @@ def createTasks():
         else:
             pass
 hinted = 0
+catching = True
+catchServers = [776623697699536948]
+hashedIm = ''
 @client.event
 async def on_message(message):
     global hinted
-    try:
-        ev = 1
-        #Get the embed message
+    global catching
+    global catchServers
+    global hashedIm
+    
+    if catching and message.guild.id in catchServers:
         try:
-            embed = message.embeds[0]
-        except IndexError:
-            ev = 0
-            
-        if (message.author.id != client.user.id and (guild_list[str(message.guild.id)][0] == "True" and "you have caught" in message.content.lower())): #and "A wild" in message.content):
-            f = open('./pokemonList.txt', 'r')
-            for i in f:
-                if i.lower().strip() in message.content.lower():
-                    if (i.strip().lower() not in file_read("User", "caught.txt")):
-                        file_append("User","caught.txt",i.strip().lower())
-                    log = open('./catch_log.txt', 'a')
-                    if i in legendaries:
-                        print(i +'-LEGENDARY', file=log)
-                    else:
-                        print(i, file=log)
-
-                    
-            
-        if (message.author.id != client.user.id and (guild_list[str(message.guild.id)][0] == "True" and "You can't get a hint right now!" in message.content) and hinted > 0 and hinted < 5): #and "A wild" in message.content):
-            hinted = hinted + 1
-            await asyncio.sleep(random.randint(5, 10))
-            await message.channel.send(prefs["custom_prefix"] + "hint ")
-            
-        if (message.author.id != client.user.id and (guild_list[str(message.guild.id)][0] == "True" and "The wild" in message.content)): #and "A wild" in message.content):
-            # print(message)
-            # print("content: ", message.content)
-            # message.content.split("The wild pokemon is ")
-            groups = regex.search('The wild pokémon is (.*)', message.content)
-            # print(groups.group(1))
-            names = []
-            reg = groups.group(1).replace('\\_', '.').strip().lower()
-            print('reg:', reg)
-            f = open('./pokemonList.txt', 'r')
-            for i in f:
-                if len(reg.strip()) == len(i.strip()):
-                    found = regex.search(reg, i.lower().strip())
-                    if found:
-                        if i.lower().strip() in [c.lower().strip() for c in legendaries] or i.lower().strip() in [c.lower().strip() for c in custom_list]:
-                            await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
-                        else:
-                            await message.channel.send(i.lower().strip() + ' ignored')
-
-                            # if (i.strip().lower() not in file_read("User", "caught.txt")):
-                            #     file_append("User","caught.txt",i.strip().lower())
-                        print('found pokemon match: ', i)
-                        hinted = 0
-                elif len("alolan " + i.strip()) == len(reg):
-                    oi = i
-                    i = "alolan " + i.strip()
-                    found = regex.search(reg, i.lower().strip())
-                    if found:
-                        # if oi.lower().strip() in [c.lower().strip() for c in legendaries] or oi.lower().strip() in [c.lower().strip() for c in custom_list]:
-                        await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
-                        # else:
-                            # await message.channel.send(i.lower().strip() + ' ignored')
-
-                            # if (i.strip().lower() not in file_read("User", "caught.txt")):
-                            #     file_append("User","caught.txt",i.strip().lower())
-                        print('found pokemon match: ', i)
-                        hinted = 0
-                        
-                elif len("galarian " + i.strip()) == len(reg):
-                    oi = i
-                    i = "galarian " + i.strip()
-                    found = regex.search(reg, i.lower().strip())
-                    if found:
-                        # if oi.lower().strip() in [c.lower().strip() for c in legendaries] or oi.lower().strip() in [c.lower().strip() for c in custom_list]:
-                        await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
-                        # else:
-                        #     await message.channel.send(i.lower().strip() + ' ignored')
-
-                            # if (i.strip().lower() not in file_read("User", "caught.txt")):
-                            #     file_append("User","caught.txt",i.strip().lower())
-                        print('found pokemon match: ', i)
-                        hinted = 0
-                
-                elif len("shiny " + i.strip()) == len(reg):
-                    oi = i
-                    i = "shiny " + i.strip()
-                    found = regex.search(reg, i.lower().strip())
-                    if found:
-                        # if oi.lower().strip() in [c.lower().strip() for c in legendaries] or oi.lower().strip() in [c.lower().strip() for c in custom_list]:
-                        await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
-                        # else:
-                        #     await message.channel.send(i.lower().strip() + ' ignored')
-
-                            # if (i.strip().lower() not in file_read("User", "caught.txt")):
-                            #     file_append("User","caught.txt",i.strip().lower())
-                        print('found pokemon match: ', i)
-                        hinted = 0            
-            
-        #Check if message is from Pokecord Spawn
-        if (message.author.id != client.user.id and ev == 1 and (guild_list[str(message.guild.id)][0] == "True")): #and "A wild" in message.content):
-            # print(message)
-
+            ev = 1
+            #Get the embed message
             try:
-                url = embed.image.url
-                try:
-                        if 'discordapp' not in url:
-                            return
-                except TypeError:
-                        return
-                #print(url)
-                #Open image and save it to JPG
-                openimg = open(str(os.path.join(path,'Assets','pokemon.jpg')),'wb')
-                openimg.write(requests.get(url).content)
-                openimg.close()
-            
-            
-
-                #Get hashes
-
-                mdhash = gethash(str(os.path.join(path,'Assets','pokemon.jpg')))
-                #Compare hashes with the lists
-                save_line = None
+                embed = message.embeds[0]
+            except IndexError:
+                ev = 0
                 
-                filePath = './Assets/pokemon.jpg'
-                searchUrl = 'http://www.google.hr/searchbyimage/upload'
-                multipart = {'encoded_image': (filePath, open(filePath, 'rb')), 'image_content': ''}
-                response = requests.post(searchUrl, files=multipart, allow_redirects=False)
-                fetchUrl = response.headers['Location']
-                # print(response.headers)
+            if (message.author.id != client.user.id and (guild_list[str(message.guild.id)][0] == "True" and "you have caught" in message.content.lower())): #and "A wild" in message.content):
+                f = open('./pokemonList.txt', 'r')
+                for i in f:
+                    if i.lower().strip() in message.content.lower():
+                        if (i.strip().lower() not in file_read("User", "caught.txt")):
+                            file_append("User","caught.txt",i.strip().lower())
+                        log = open('./catch_log.txt', 'a')
+                        if i in legendaries:
+                            print(i +'-LEGENDARY', file=log)
+                        else:
+                            print(i, file=log)
+                        try:
+                            allHashes = pickle.load(open('pickledHashes.p', 'rb'))
+                        except:
+                            allHashes = {}
+                        if (i.strip().lower() in allHashes):
+                            print('{0} already hashed'.format(i.strip().lower()))
+                        allHashes[i.strip().lower()] = hashedIm
+                        pickle.dump(allHashes, open('pickledHashes.p', 'wb'))
+                        print('{0} hashed to {1}'.format(i.strip().lower(), hashedIm))
+
+
+
+                        
                 
+            if (message.author.id != client.user.id and (guild_list[str(message.guild.id)][0] == "True" and "You can't get a hint right now!" in message.content) and hinted > 0 and hinted < 5): #and "A wild" in message.content):
+                hinted = hinted + 1
                 await asyncio.sleep(random.randint(5, 10))
                 await message.channel.send(prefs["custom_prefix"] + "hint ")
-                hinted = 1
+                
+            if (message.author.id != client.user.id and (guild_list[str(message.guild.id)][0] == "True" and "The wild" in message.content)): #and "A wild" in message.content):
+                # print(message)
+                # print("content: ", message.content)
+                # message.content.split("The wild pokemon is ")
+                groups = regex.search('The wild pokémon is (.*)', message.content)
+                # print(groups.group(1))
+                names = []
+                reg = groups.group(1).replace('\\_', '.').strip().lower()
+                print('reg:', reg)
+                f = open('./pokemonList.txt', 'r')
+                for i in f:
+                    if len(reg.strip()) == len(i.strip()):
+                        found = regex.search(reg, i.lower().strip())
+                        if found:
+                            if i.lower().strip() in [c.lower().strip() for c in legendaries] or i.lower().strip() in [c.lower().strip() for c in custom_list]:
+                                await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
+                            else:
+                                await message.channel.send(i.lower().strip() + ' ignored')
 
-                # webbrowser.open(fetchUrl)
-            
-                for i in hashdata:
-                    if (hashdata[i] == mdhash):
-                        save_line = i
-                        break
+                                # if (i.strip().lower() not in file_read("User", "caught.txt")):
+                                #     file_append("User","caught.txt",i.strip().lower())
+                            print('found pokemon match: ', i)
+                            hinted = 0
+                    elif len("alolan " + i.strip()) == len(reg):
+                        oi = i
+                        i = "alolan " + i.strip()
+                        found = regex.search(reg, i.lower().strip())
+                        if found:
+                            # if oi.lower().strip() in [c.lower().strip() for c in legendaries] or oi.lower().strip() in [c.lower().strip() for c in custom_list]:
+                            await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
+                            # else:
+                                # await message.channel.send(i.lower().strip() + ' ignored')
+
+                                # if (i.strip().lower() not in file_read("User", "caught.txt")):
+                                #     file_append("User","caught.txt",i.strip().lower())
+                            print('found pokemon match: ', i)
+                            hinted = 0
+                            
+                    elif len("galarian " + i.strip()) == len(reg):
+                        oi = i
+                        i = "galarian " + i.strip()
+                        found = regex.search(reg, i.lower().strip())
+                        if found:
+                            # if oi.lower().strip() in [c.lower().strip() for c in legendaries] or oi.lower().strip() in [c.lower().strip() for c in custom_list]:
+                            await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
+                            # else:
+                            #     await message.channel.send(i.lower().strip() + ' ignored')
+
+                                # if (i.strip().lower() not in file_read("User", "caught.txt")):
+                                #     file_append("User","caught.txt",i.strip().lower())
+                            print('found pokemon match: ', i)
+                            hinted = 0
                     
-                # print(message.channel, save_line.lower())
-                # await message.channel.send(prefs["custom_prefix"] + "catch " + save_line.lower())
+                    elif len("shiny " + i.strip()) == len(reg):
+                        oi = i
+                        i = "shiny " + i.strip()
+                        found = regex.search(reg, i.lower().strip())
+                        if found:
+                            # if oi.lower().strip() in [c.lower().strip() for c in legendaries] or oi.lower().strip() in [c.lower().strip() for c in custom_list]:
+                            await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
+                            # else:
+                            #     await message.channel.send(i.lower().strip() + ' ignored')
 
-                if(save_line in legendaries):
-                    await asyncio.sleep(3)
-                else:
-                    await asyncio.sleep(int(guild_list[str(message.guild.id)][3]))
-                if(prefs["custom_list"] == "True"):
-                    if(save_line in custom_list):
-                        await message.channel.send(prefs["custom_prefix"] + "catch " + save_line.lower())
-                    if (save_line not in file_read("User", "caught.txt")):
-                        file_append("User","caught.txt",save_line)
+                                # if (i.strip().lower() not in file_read("User", "caught.txt")):
+                                #     file_append("User","caught.txt",i.strip().lower())
+                            print('found pokemon match: ', i)
+                            hinted = 0            
+                
+            #Check if message is from Pokecord Spawn
+            if (message.author.id != client.user.id and ev == 1 and (guild_list[str(message.guild.id)][0] == "True")): #and "A wild" in message.content):
+                # print(message)
+
+                try:
+                    url = embed.image.url
+                    try:
+                            if 'discordapp' not in url:
+                                return
+                    except TypeError:
+                            return
+                    #print(url)
+                    #Open image and save it to JPG
+                    openimg = open(str(os.path.join(path,'Assets','pokemon.jpg')),'wb')
+                    openimg.write(requests.get(url).content)
+                    openimg.close()
+                
+                
+
+                    #Get hashes
+
+                    mdhash = gethash(str(os.path.join(path,'Assets','pokemon.jpg')))
+                    hashedIm = mdhash
+                    allHashes = pickle.load(open('pickledHashes.p', 'rb'))
+                    found = False
+                    for key in allHashes:
+                        if allHashes[key] == hashedIm:
+                            await message.channel.send(prefs["custom_prefix"] + "c " + key)
+                            found = True
+                            break
+                    
+                    if not found:
+                        await asyncio.sleep(random.randint(5, 10))
+                        await message.channel.send(prefs["custom_prefix"] + "hint ")
+                        hinted = 1
+
+                    # webbrowser.open(fetchUrl)
+                    save_line = None
+                    for i in hashdata:
+                        if (hashdata[i] == mdhash):
+                            save_line = i
+                            break
                         
-                else:
-                    await message.channel.send(prefs["custom_prefix"] + "catch " + save_line.lower())
-                    if (save_line not in file_read("User", "caught.txt")):
-                        file_append("User","caught.txt",save_line)
-                    
+                    # print(message.channel, save_line.lower())
+                    # await message.channel.send(prefs["custom_prefix"] + "catch " + save_line.lower())
+
+                    if(save_line in legendaries):
+                        await asyncio.sleep(3)
                     else:
-                        return
-            except AttributeError:
-                # print("error")
-                # traceback.print_exc()
-                return
-    except Exception as e:
-        if(e.__class__.__name__ == "KeyError"):
-            pass
-        else:
-            print (e)
+                        await asyncio.sleep(int(guild_list[str(message.guild.id)][3]))
+                    if(prefs["custom_list"] == "True"):
+                        if(save_line in custom_list):
+                            await message.channel.send(prefs["custom_prefix"] + "catch " + save_line.lower())
+                        if (save_line not in file_read("User", "caught.txt")):
+                            file_append("User","caught.txt",save_line)
+                            
+                    else:
+                        await message.channel.send(prefs["custom_prefix"] + "catch " + save_line.lower())
+                        if (save_line not in file_read("User", "caught.txt")):
+                            file_append("User","caught.txt",save_line)
+                        
+                        else:
+                            return
+                except AttributeError:
+                    # print("error")
+                    # traceback.print_exc()
+                    return
+        except Exception as e:
+            if(e.__class__.__name__ == "KeyError"):
+                pass
+            else:
+                print (e)
 
