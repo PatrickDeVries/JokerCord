@@ -217,7 +217,7 @@ async def on_message(message):
             if (message.author.id != client.user.id and (guild_list[str(message.guild.id)][0] == "True" and "you have caught" in message.content.lower())): #and "A wild" in message.content):
                 f = open('./pokemonList.txt', 'r')
                 for i in f:
-                    if i.lower().strip() in message.content.lower():
+                    if ' ' + i.lower().strip() in message.content.lower():
                         if (i.strip().lower() not in file_read("User", "caught.txt")):
                             file_append("User","caught.txt",i.strip().lower())
                         log = open('./catch_log.txt', 'a')
@@ -232,6 +232,8 @@ async def on_message(message):
                             allHashes = {}
                         if (i.strip().lower() in allHashes):
                             print('{0} already hashed'.format(i.strip().lower()))
+                        else:
+                            print('Total hashed pokemon: {0}'.format(len(allHashes) + 1))
                         allHashes[i.strip().lower()] = hashedIm
                         pickle.dump(allHashes, open('pickledHashes.p', 'wb'))
                         print('{0} hashed to {1}'.format(i.strip().lower(), hashedIm))
