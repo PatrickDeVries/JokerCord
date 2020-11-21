@@ -214,6 +214,31 @@ async def on_message(message):
             except IndexError:
                 ev = 0
                 
+            if (ev == 1 and "level" in str(embed.title).lower()):
+                try:
+                    url = embed.image.url
+
+                    #Open image and save it to JPG
+                    openimg = open(str(os.path.join(path,'Assets','pokemon.jpg')),'wb')
+                    openimg.write(requests.get(url).content)
+                    openimg.close()
+                
+                
+
+                    #Get hashes
+                    mdhash = gethash(str(os.path.join(path,'Assets','pokemon.jpg')))
+                    allHashes = pickle.load(open('pickledHashes.p', 'rb'))
+                    
+                    title = str(embed.title)
+                    name = regex.search('Level [0-9]+ (.*)', title)
+                    name = name.groups(1)[0].lower().strip()
+                    print('Info pokemon identified as: {0}'.format(name))
+                    
+                    allHashes[name] = mdhash
+                    pickle.dump(allHashes, open('pickledHashes.p', 'wb'))
+                except:
+                    print('other error')
+                
             if (message.author.id != client.user.id and (guild_list[str(message.guild.id)][0] == "True" and "you have caught" in message.content.lower())): #and "A wild" in message.content):
                 f = open('./pokemonList.txt', 'r')
                 for i in f:
