@@ -229,7 +229,7 @@ async def on_message(message):
                     f = open('./pokemonList.txt', 'r')
 
                     for i in f:
-                        if ' ' + name in ' ' + i.lower().strip() or 'mega ' + name in i.lower().strip():
+                        if ' ' + name in ' ' + i.lower().strip() or 'mega ' in name or '✨ ' in name:
                             print('Info pokemon identified as: {0}'.format(name))
                             allHashes[name] = mdhash
                             pickle.dump(allHashes, open('pickledHashes.p', 'wb'))
