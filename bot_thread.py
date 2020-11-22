@@ -51,7 +51,8 @@ legendaries = ['arceus', 'articuno', 'azelf', 'celebi', 'cobalion', 'cosmoem', '
             'rayquaza', 'regice', 'regigigas', 'regirock', 'registeel', 'reshiram', 'shaymin', 'silvally',
             'solgaleo', 'suicune', 'tapu bulu', 'tapu fini', 'tapu koko', 'tapu lele', 'terrakion', 'thundurus',
             'tornadus', 'type: null', 'uxie', 'victini', 'virizion', 'volcanion', 'xerneas', 'yveltal', 'naganadel', 'attack deoxys',
-            'speed deoxys', 'normal deoxys', 'defense deoxys']
+            'speed deoxys', 'normal deoxys', 'defense deoxys', 'nihilego', 'buzzwole', 'pheromosa', 'xurkitree', 'kartana', 
+            'celesteela', 'guzzlord', 'blacephalon', 'stakataka', 'poipole', 'naganadel']
 
 
 #Define write to json
@@ -364,7 +365,7 @@ async def on_message(message):
                     allHashes = pickle.load(open('pickledHashes.p', 'rb'))
                     found = False
                     for key in allHashes:
-                        if allHashes[key] == hashedIm:
+                        if allHashes[key] == hashedIm and (key in [c.lower().strip() for c in legendaries] or key in [c.lower().strip() for c in custom_list]):
                             await message.channel.send(prefs["custom_prefix"] + "c " + key)
                             found = True
                             break
