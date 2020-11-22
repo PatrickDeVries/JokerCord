@@ -369,18 +369,15 @@ async def on_message(message):
                             await message.channel.send(prefs["custom_prefix"] + "c " + key)
                             found = True
                             break
+                        elif allHashes[key] == hashedIm:
+                            found = True
+                            break
 
                             
                     
                     #Compare hashes with the lists
                     save_line = None
-                    
-                    # filePath = './Assets/pokemon.jpg'
-                    # searchUrl = 'http://www.google.hr/searchbyimage/upload'
-                    # multipart = {'encoded_image': (filePath, open(filePath, 'rb')), 'image_content': ''}
-                    # response = requests.post(searchUrl, files=multipart, allow_redirects=False)
-                    # fetchUrl = response.headers['Location']
-                    # print(response.headers)
+
                     if not found:
                         await asyncio.sleep(random.randint(5, 10))
                         await message.channel.send(prefs["custom_prefix"] + "hint ")
