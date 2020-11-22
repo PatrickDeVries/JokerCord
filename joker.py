@@ -33,7 +33,7 @@ async def startClient():
         await bot_thread.client.start(pr_l["token"],bot=False)
     except Exception as e:
         if(e.__class__.__name__ == "LoginFailure"):
-                print("Something went wrong with the token. If this is the first time you use this bot, please go to http://localhost:5555 and edit your preferences.")
+                print("Something went wrong with the token. If this is the first time you use this bot, please go to http://localhost:5558 and edit your preferences.")
         else:
             print(e)
 def loop_in_thread(loop):
@@ -253,4 +253,4 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     t = threading.Thread(target=loop_in_thread, args=(loop,))
     t.start()
-    app.run(port="5555", debug = False)
+    app.run(port="5558", debug = False)
