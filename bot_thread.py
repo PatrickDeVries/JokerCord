@@ -292,10 +292,11 @@ async def on_message(message):
                     if len(reg.strip()) == len(i.strip()):
                         found = regex.search(reg, i.lower().strip())
                         if found:
-                            if i.lower().strip() in [c.lower().strip() for c in legendaries] or i.lower().strip() in [c.lower().strip() for c in custom_list]:
-                                await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
-                            else:
-                                await message.channel.send(i.lower().strip() + ' ignored')
+                            # if i.lower().strip() in [c.lower().strip() for c in legendaries] or i.lower().strip() in [c.lower().strip() for c in custom_list]:
+                            await message.channel.send(prefs["custom_prefix"] + "c " + i.lower().strip())
+                            # else:
+                            #     await message.channel.send(i.lower().strip() + ' ignored')
+
 
                                 # if (i.strip().lower() not in file_read("User", "caught.txt")):
                                 #     file_append("User","caught.txt",i.strip().lower())
