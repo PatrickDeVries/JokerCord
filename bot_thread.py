@@ -376,6 +376,9 @@ async def on_message(message):
                             await message.channel.send(prefs["custom_prefix"] + "c " + key)
                             found = True
                             break
+                        elif allHashes[key] == hashedIm:
+                            found = True
+                            break
                     
                     if not found:
                         await asyncio.sleep(random.randint(5, 10))
