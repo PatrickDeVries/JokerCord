@@ -52,7 +52,7 @@ legendaries = ['arceus', 'articuno', 'azelf', 'celebi', 'cobalion', 'cosmoem', '
             'solgaleo', 'suicune', 'tapu bulu', 'tapu fini', 'tapu koko', 'tapu lele', 'terrakion', 'thundurus',
             'tornadus', 'type: null', 'uxie', 'victini', 'virizion', 'volcanion', 'xerneas', 'yveltal', 'naganadel', 'attack deoxys',
             'speed deoxys', 'normal deoxys', 'defense deoxys', 'nihilego', 'buzzwole', 'pheromosa', 'xurkitree', 'kartana', 
-            'celesteela', 'guzzlord', 'blacephalon', 'stakataka', 'poipole', 'naganadel']
+            'celesteela', 'guzzlord', 'blacephalon', 'stakataka', 'poipole', 'naganadel', 'melmetal', 'meltan']
 
 
 #Define write to json
