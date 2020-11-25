@@ -16,6 +16,7 @@ import webbrowser
 import regex
 import pickle
 import pyperclip
+from pynput.keyboard import Key, Controller, Listener
 
 
 
@@ -195,9 +196,13 @@ def createTasks():
             client.loop.create_task(spamThread(spchannel,channel_list[channel][2]))
         else:
             pass
+        
+
+
 hinted = 0
 catching = True
 catchServers = [776623697699536948]
+autotypeChannels = [717292396450283522]
 hashedIm = ''
 @client.event
 async def on_message(message):
@@ -205,7 +210,10 @@ async def on_message(message):
     global catching
     global catchServers
     global hashedIm
+    global autotypeChannels
     
+    if message.channel.id not in autotypeChannels:
+        return
     try:
         ev = 1
         #Get the embed message
@@ -258,7 +266,6 @@ async def on_message(message):
             
 
                 #Get hashes
-
                 mdhash = gethash(str(os.path.join(path,'Assets','pokemon.jpg')))
                 hashedIm = mdhash
                 allHashes = pickle.load(open('pickledHashes.p', 'rb'))
@@ -268,11 +275,22 @@ async def on_message(message):
                         pyperclip.copy(prefs["custom_prefix"] +"c " + key); 
                         spam = pyperclip.paste();
                         found = True
+                        strn = prefs["custom_prefix"] +"c " + key
+                        keyboard = Controller()
+                        for c in strn:
+                            keyboard.press(c)
+                            keyboard.release(c)
+                            
                         break
                 
                 if not found:
                     pyperclip.copy(prefs['custom_prefix'] + 'c '); 
                     spam = pyperclip.paste();
+                    strn = prefs["custom_prefix"] +"c "
+                    keyboard = Controller()
+                    for c in strn:
+                        keyboard.press(c)
+                        keyboard.release(c)
 
             except AttributeError:
                 # print("error")
